@@ -78,6 +78,8 @@ MonoBehaviour:
   _scanDelay: 3
   _reachedDistance: 5
   _storage: {fileID: 6574455605771497694}
+  _newBotTransform: {fileID: 0}
+  _botFactory: {fileID: 0}
 --- !u!114 &874498588697784603
 MonoBehaviour:
   m_ObjectHideFlags: 0

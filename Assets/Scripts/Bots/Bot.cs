@@ -24,6 +24,12 @@ public class Bot : MonoBehaviour
         RemoveCargo();
     }
 
+    public void Init(Vector3 position, Base parentBase)
+    {
+        transform.position = position;
+        _base = parentBase;
+    }
+
     private IEnumerator GoTarget(Transform target, float reachedDistance)
     {
         while (Vector3.Distance(transform.position, target.position) > reachedDistance)

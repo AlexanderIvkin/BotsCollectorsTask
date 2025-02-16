@@ -1,22 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool : MonoBehaviour
+public class ObjectPool<T> : MonoBehaviour where T: PoolableObject
 {
-    [SerializeField] private PoolableObject _prefab;
+    [SerializeField] private T _prefab;
     [SerializeField] private int _capacity;
 
-    private Queue<PoolableObject> _pool = new ();
+    private Queue<T> _pool = new ();
 
     private void Awake()
     {
         Fill();
     }
 
-    public PoolableObject Get(Vector3 position)
+    public T Get(Vector3 position)
     {
-        PoolableObject currentResource;
+        T currentResource;
 
         if (_pool.Count > 0)
         {
@@ -24,7 +23,7 @@ public class ObjectPool : MonoBehaviour
         }
         else
         {
-            currentResource = Instantiate(_prefab);
+            currentResource = Create();
         }
 
         currentResource.transform.position = position;
@@ -33,7 +32,7 @@ public class ObjectPool : MonoBehaviour
         return currentResource;
     }
 
-    public void Release(PoolableObject poolableObject)
+    public void Release(T poolableObject)
     {
         _pool.Enqueue(poolableObject);
     }
@@ -42,7 +41,12 @@ public class ObjectPool : MonoBehaviour
     {
         for ( int i = 0; i < _capacity; i++)
         {
-            _pool.Enqueue(Instantiate(_prefab));
+            _pool.Enqueue(Create());
         }
+    }
+
+    private T Create()
+    {
+        return Instantiate(_prefab);
     }
 }

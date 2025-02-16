@@ -10,6 +10,8 @@ public class Base : MonoBehaviour, ITargetable
     [SerializeField] private float _scanDelay;
     [SerializeField] private float _reachedDistance;
     [SerializeField] private Storage _storage;
+    [SerializeField] private Transform _newBotTransform;
+    [SerializeField] private BotFactory _botFactory;
 
     private Queue<Bot> _freeBotsQueue = new();
     private List<Resource> _assignedCollectorResources = new();
@@ -52,17 +54,33 @@ public class Base : MonoBehaviour, ITargetable
 
             if (_freeBotsQueue.Count > 0)
             {
-                List<Resource> foundResources = _resourceScanner.GetFoundResources();
+                CollectResources();
+            }
 
-                if (foundResources!=null)
-                {
-                    Queue<Resource> resourcesQueue = new Queue<Resource>(foundResources.Except(_assignedCollectorResources).ToList());
-                    Resource currentResource = resourcesQueue.Dequeue();
-                    StartCoroutine(_freeBotsQueue.Dequeue().BringCargo(currentResource));
-                    _assignedCollectorResources.Add(currentResource);
-                }
+            if (_storage.ResourceCount == _botFactory.Price)
+            {
+                CreateBot();
+                _storage.Remove(_botFactory.Price);
             }
         }
+    }
+
+    private void CollectResources()
+    {
+        List<Resource> foundResources = _resourceScanner.GetFoundResources();
+
+        if (foundResources != null)
+        {
+            Queue<Resource> resourcesQueue = new Queue<Resource>(foundResources.Except(_assignedCollectorResources).ToList());
+            Resource currentResource = resourcesQueue.Dequeue();
+            StartCoroutine(_freeBotsQueue.Dequeue().BringCargo(currentResource));
+            _assignedCollectorResources.Add(currentResource);
+        }
+    }
+
+    private void CreateBot()
+    {
+        _freeBotsQueue.Enqueue(_botFactory.Create(_newBotTransform.position, this));
     }
 
     private void OnCargoDelivered(Bot bot, Resource resource)

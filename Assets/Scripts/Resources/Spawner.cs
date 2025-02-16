@@ -6,7 +6,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private float _delay;
     [SerializeField] private float _boundX;
     [SerializeField] private float _boundZ;
-    [SerializeField] private ObjectPool _objectPool;
+    [SerializeField] private ResourcesPool _resourcesPool;
 
     private void Start()
     {
@@ -21,7 +21,7 @@ public class Spawner : MonoBehaviour
         {
             yield return wait;
 
-            PoolableObject poolableObject = _objectPool.Get(GeneratePosition());
+            PoolableObject poolableObject = _resourcesPool.Get(GeneratePosition());
 
             poolableObject.Disabled += OnObjectDisable;
         }
@@ -30,7 +30,7 @@ public class Spawner : MonoBehaviour
     private void OnObjectDisable(PoolableObject poolableObject)
     {
         poolableObject.Disabled -= OnObjectDisable;
-        _objectPool.Release(poolableObject);
+        _resourcesPool.Release((Resource)poolableObject);
     }
 
     private Vector3 GeneratePosition()
