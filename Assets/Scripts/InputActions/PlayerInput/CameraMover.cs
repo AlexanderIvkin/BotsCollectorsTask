@@ -8,6 +8,7 @@ public class CameraMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private InputReader _inputReader;
+    [SerializeField] private Rigidbody _rigidbody;
 
     private void OnEnable()
     {
@@ -27,7 +28,7 @@ public class CameraMover : MonoBehaviour
 
         if(direction.sqrMagnitude > stopValue)
         {
-            transform.Translate(new Vector3(direction.x, 0, direction.y));
+            _rigidbody.velocity = new Vector3(direction.x, 0, direction.y)* _speed * Time.deltaTime;
         }
     }
 
