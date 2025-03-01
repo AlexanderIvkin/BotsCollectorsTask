@@ -19,15 +19,15 @@ public class PlayerInputHandler : MonoBehaviour
     {
         _playerInput.Enable();
         _playerInput.Camera.Move.performed += OnMove;
-        _playerInput.Camera.Move.canceled += OnStop;
-        _playerInput.Mouse.Click.performed += ctx => OnClick();
+        _playerInput.Camera.Move.canceled += ctx => OnStop();
+        _playerInput.Mouse.Click.performed += OnClick;
     }
 
     private void OnDisable()
     {
         _playerInput.Camera.Move.performed -= OnMove;
-        _playerInput.Camera.Move.canceled -= OnStop;
-        _playerInput.Mouse.Click.performed -= ctx => OnClick();
+        _playerInput.Camera.Move.canceled -= ctx => OnStop();
+        _playerInput.Mouse.Click.performed -= OnClick;
         _playerInput.Disable();
     }
 
@@ -36,13 +36,14 @@ public class PlayerInputHandler : MonoBehaviour
         DirectionChanged?.Invoke(context.action.ReadValue<Vector2>());
     }
 
-    private void OnStop(InputAction.CallbackContext context)
+    private void OnStop()
     {
         Stopped?.Invoke();
     }
 
-    private void OnClick()
+    private void OnClick(InputAction.CallbackContext context)
     {
+        Debug.Log("Вызываю клик");
         Clicked?.Invoke();
     }
 }
