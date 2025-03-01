@@ -1,20 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class MouseClicker : MonoBehaviour
 {
-    [SerializeField] private InputReader _inputReader;
+    [SerializeField] private PlayerInputHandler _playerInputHandler;
 
     private void OnEnable()
     {
-        _inputReader.Clicked += Click;
+        _playerInputHandler.Clicked += Click;
     }
 
     private void OnDisable()
     {
-        _inputReader.Clicked -= Click;
+        _playerInputHandler.Clicked -= Click;
     }
 
     private void Click()

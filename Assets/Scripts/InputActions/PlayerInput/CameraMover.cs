@@ -1,39 +1,47 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class CameraMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
-    [SerializeField] private InputReader _inputReader;
-    [SerializeField] private Rigidbody _rigidbody;
+    [SerializeField] private PlayerInputHandler _playerInputHandler;
+
+    private Vector2 _direction;
 
     private void OnEnable()
     {
-        _inputReader.Moved += Move;
-        _inputReader.Stopped += Stop;
+        _playerInputHandler.DirectionChanged += OnDirectionChanged;
+        _playerInputHandler.Stopped += OnStopped;
     }
 
     private void OnDisable()
     {
-        _inputReader.Moved -= Move;
-        _inputReader.Stopped -= Stop;
+        _playerInputHandler.DirectionChanged -= OnDirectionChanged;
+        _playerInputHandler.Stopped -= OnStopped;
     }
 
-    private void Move(Vector2 direction)
+    private void FixedUpdate()
+    {
+        Move();
+    }
+
+    private void Move()
     {
         float stopValue = 0.1f;
 
-        if(direction.sqrMagnitude > stopValue)
-        {
-            _rigidbody.velocity = new Vector3(direction.x, 0, direction.y)* _speed * Time.deltaTime;
-        }
+        if (_direction.sqrMagnitude < stopValue)
+            return;
+
+        transform.position = transform.position + new Vector3(_direction.x, 0, _direction.y) * _speed * Time.fixedDeltaTime;
     }
 
-    private void Stop()
+    private void OnDirectionChanged(Vector2 direction)
     {
-        Debug.Log("Остановился");
+
+        _direction = direction;
+    }
+
+    private void OnStopped()
+    {
+        _direction = Vector2.zero;
     }
 }
