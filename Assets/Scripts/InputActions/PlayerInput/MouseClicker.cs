@@ -17,6 +17,6 @@ public class MouseClicker : MonoBehaviour
 
     private void Click()
     {
-        
+        Debug.Log("Click");
     }
 }
